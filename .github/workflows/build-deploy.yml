@@ -107,6 +107,7 @@ jobs:
       #   run: |
       #     kubectl create deployment my-python-app --image=${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
       #     kubectl expose deployment my-python-app --type=LoadBalancer --port=8080
+      
 
       - name: SSH into Minikube
         uses: appleboy/ssh-action@v0.1.2
