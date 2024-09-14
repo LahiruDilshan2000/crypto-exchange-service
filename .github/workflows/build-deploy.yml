@@ -92,16 +92,29 @@ jobs:
       - name: Push Docker image to Docker Hub (optional)
         run: docker push your-image-name:latest
 
-      - name: Connect to VPS via SSH
-        uses: actions/ssh-keygen@v2
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v0.1.2
         with:
-          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssh-key-file: ~/.ssh/id_rsa
+          host: 212.111.88.252
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/{{ github.event.repository.name }}:latest
+            docker stop your-container-name || true
+            docker rm your-container-name || true
+            docker run -d --name your-container-name -p 80:80 ${{ secrets.DOCKER_HUB_USERNAME }}/{{ github.event.repository.name }}:latest
 
-      - name: Deploy to VPS
-        run: |
-          ssh -o StrictHostKeyChecking=no root@212.111.88.252 'docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/$crypto-exchange-service:latest'
-          ssh -o StrictHostKeyChecking=no root@212.111.88.252 'docker run -d --name crypto-exchange-service crypto-exchange-service/${{ github.event.repository.name }}:latest'
+      # - name: Connect to VPS via SSH
+      #   uses: actions/ssh-keygen@v2
+      #   with:
+      #     ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     ssh-key-file: ~/.ssh/id_rsa
+
+      # - name: Deploy to VPS
+      #   run: |
+      #     ssh -o StrictHostKeyChecking=no root@212.111.88.252 'docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/$crypto-exchange-service:latest'
+      #     ssh -o StrictHostKeyChecking=no root@212.111.88.252 'docker run -d --name crypto-exchange-service crypto-exchange-service/${{ github.event.repository.name }}:latest'
 
       # - name: Start Minikube
       #   run: minikube start
