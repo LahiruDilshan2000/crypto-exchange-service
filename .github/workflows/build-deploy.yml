@@ -91,16 +91,36 @@ jobs:
       #   run: |
       #     kubectl delete deployment your-deployment-name
       #     kubectl apply -f deployment.yaml
-      - name: Set up Minikube
-        run: |
-          curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-          chmod +x minikube
-          sudo mv minikube /usr/local/bin/
+      # - name: Set up Minikube
+      #   run: |
+      #     curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+      #     chmod +x minikube
+      #     sudo mv minikube /usr/local/bin/
 
-      - name: Start Minikube
-        run: minikube start
+      # - name: Start Minikube
+      #   run: minikube start
+
+      # - name: Deploy to Minikube
+      #   run: |
+      #     kubectl create deployment my-python-app --image=${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
+      #     kubectl expose deployment my-python-app --type=LoadBalancer --port=8080
+
+      - name: Download Docker image artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ github.event.repository.name }}:latest
+          path: python-backend.tar
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v1
+          with:
+            version: 'v1.21.0'
+
+      - name: Load Docker image into Minikube
+        run: |
+          minikube image load python-backend.tar
 
       - name: Deploy to Minikube
         run: |
-          kubectl create deployment my-python-app --image=${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
-          kubectl expose deployment my-python-app --type=LoadBalancer --port=8080
+          kubectl apply -f kube-config.yaml
+          kubectl apply -f service.yaml
