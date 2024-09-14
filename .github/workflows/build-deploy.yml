@@ -70,46 +70,12 @@ jobs:
       # - name: Image digest
         # run: echo ${{ steps.docker_build.output.name }}
 
-  minikube:
-    needs: [build]
-      name: Start Kubernetes cluster
-      runs-on: ubuntu-20.04
-      steps:
-        - name: Start Minikube
-          id: minikube
-          uses: hiberbee/github-action-minikube@latest
-          with:
-            profile: github
-
-        - name: Get Minikube status
-          run: minikube status
-
-        - name: Get cluster info
-          run: kubectl cluster-info
-
-        - name: Get Kubernetes pods
-          run: kubectl get services --all-namespaces
-
-        - name: Get Minikube IP
-          run: echo ${{ steps.minikube.outputs.ip }}
-
-        - name: Get Docker containers
-          run: docker ps
-
-        - name: Get Helm releases
-          uses: hiberbee/github-action-helm@latest
-          with:
-            helm-command: list
 
   deploy:
     environment:
       name: testing
     runs-on: ubuntu-latest
     needs: [build]
-
-    # environment:
-      # name: testing
-    
     steps:
       - name: pulling git repo
         uses: actions/checkout@v3
