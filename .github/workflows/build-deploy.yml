@@ -83,8 +83,8 @@ jobs:
       - name: Deploying stuff
         run: echo "going to delpoying"
 
-      - name: Set up Docker
-        uses: actions/setup-docker@v2
+      # - name: Set up Docker
+      #   uses: actions/setup-docker@v3
 
       # - name: Build Docker image
         # run: docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/{{ github.event.repository.name }}:latest
