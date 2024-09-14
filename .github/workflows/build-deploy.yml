@@ -78,5 +78,29 @@ jobs:
       # name: testing
     
     steps:
+      - name: pulling git repo
+        uses: actions/checkout@v3
+
       - name: Deploying stuff
         run: echo "going to delpoying"
+
+      # - name: Start Minikube
+      #   run: minikube start
+
+      # - name: Deploy to Minikube
+      #   run: |
+      #     kubectl delete deployment your-deployment-name
+      #     kubectl apply -f deployment.yaml
+      - name: Set up Minikube
+        run: |
+          curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+          chmod +x minikube
+          sudo mv minikube /usr/local/bin/
+
+      - name: Start Minikube
+        run: minikube start
+
+      - name: Deploy to Minikube
+        run: |
+          kubectl create deployment my-python-app --image=${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
+          kubectl expose deployment my-python-app --type=LoadBalancer --port=8080
