@@ -7,9 +7,15 @@ def exchange_crypto():
     lala_sample = {"lala": "ABCDEFGH"}
     return jsonify(lala_sample)
 
+@app.route('/data/data', methods=['GET'])
+def exchange_crypto():
+    lala_sample = {"lala": "ABCDEFGH"}
+    return jsonify(lala_sample)
+
+
 @app.route('/test_api', methods=['GET'])
 def test_api():
-    data = {"test": "Hello World api test"}
+    data = {"test": "Hello World api testt"}
     return jsonify(data)
 
 if __name__ == '__main__':
