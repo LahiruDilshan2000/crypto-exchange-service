@@ -101,8 +101,8 @@ jobs:
           port: 22
           script: |
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
-            docker stop ${{ github.event.repository.name }} || true
-            docker rm ${{ github.event.repository.name }} || true
+            docker stop ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }} || true
+            docker rmi -f ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }} || true
             docker run -d --name ${{ github.event.repository.name }} -p 8080:5000 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
 
       # - name: Connect to VPS via SSH
