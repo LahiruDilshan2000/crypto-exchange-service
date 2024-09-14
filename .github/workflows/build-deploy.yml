@@ -97,53 +97,54 @@ jobs:
       #     chmod +x minikube
       #     sudo mv minikube /usr/local/bin/
 
-      # - name: Start Minikube
-      #   run: minikube start
-
-      # - name: Deploy to Minikube
-      #   run: |
-      #     kubectl create deployment my-python-app --image=${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
-      #     kubectl expose deployment my-python-app --type=LoadBalancer --port=8080
-      
-      # - name: SSH into Minikube
-      #   uses: appleboy/ssh-action@v0.1.2
-      #   with:
-      #     host: ${{ secrets.MINIKUBE_HOST }}
-      #     port: 33001
-      #     username: ${{ secrets.MINIKUBE_USER }}
-      #     key: ${{ secrets.MINIKUBE_SSH_PRIVATE_KEY }}
-
-      # - name: Pull the latest Docker image from Docker Hub into Minikube
-      #   run: |
-      #     minikube ssh -- docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
-      #     minikube ssh -- docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest ${{ github.event.repository.name }}:latest
-
-      # - name: Deploy to Minikube using kubectl
-      #   run: |
-      #     kubectl apply -f kube-config.yaml
-      #     kubectl apply -f service.yaml
       - name: Start Minikube
-        id: minikube
-        uses: hiberbee/github-action-minikube@latest
+        run: minikube start
+
+      - name: Deploy to Minikube
+        run: |
+          kubectl create deployment my-python-app --image=${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
+          kubectl expose deployment my-python-app --type=LoadBalancer --port=8080
+      
+      - name: SSH into Minikube
+        uses: appleboy/ssh-action@v0.1.2
         with:
-          profile: github
+          host: ${{ secrets.MINIKUBE_HOST }}
+          username: ${{ secrets.MINIKUBE_USER }}
+          key: ${{ secrets.MINIKUBE_SSH_PRIVATE_KEY }}
 
-      - name: Get Minikube status
-        run: minikube status
+      - name: Pull the latest Docker image from Docker Hub into Minikube
+        run: |
+          minikube ssh -- docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
+          minikube ssh -- docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest ${{ github.event.repository.name }}:latest
 
-      - name: Get cluster info
-        run: kubectl cluster-info
+      - name: Deploy to Minikube using kubectl
+        run: |
+          kubectl apply -f kube-config.yaml
+          kubectl apply -f service.yaml
 
-      - name: Get Kubernetes pods
-        run: kubectl get services --all-namespaces
 
-      - name: Get Minikube IP
-        run: echo ${{ steps.minikube.outputs.ip }}
+      # - name: Start Minikube
+      #   id: minikube
+      #   uses: hiberbee/github-action-minikube@latest
+      #   with:
+      #     profile: github
 
-      - name: Get Docker containers
-        run: docker ps
+      # - name: Get Minikube status
+      #   run: minikube status
 
-      - name: Get Helm releases
-        uses: hiberbee/github-action-helm@latest
-        with:
-          helm-command: list
+      # - name: Get cluster info
+      #   run: kubectl cluster-info
+
+      # - name: Get Kubernetes pods
+      #   run: kubectl get services --all-namespaces
+
+      # - name: Get Minikube IP
+      #   run: echo ${{ steps.minikube.outputs.ip }}
+
+      # - name: Get Docker containers
+      #   run: docker ps
+
+      # - name: Get Helm releases
+      #   uses: hiberbee/github-action-helm@latest
+      #   with:
+      #     helm-command: list
