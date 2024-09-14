@@ -112,7 +112,7 @@ jobs:
         uses: appleboy/ssh-action@v0.1.2
         with:
           host: ${{ secrets.MINIKUBE_HOST }}
-          port: 22
+          port: 33001
           username: ${{ secrets.MINIKUBE_USER }}
           key: ${{ secrets.MINIKUBE_SSH_PRIVATE_KEY }}
 
