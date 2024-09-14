@@ -83,44 +83,50 @@ jobs:
       - name: Deploying stuff
         run: echo "going to delpoying"
 
+      - name: Set up Docker
+        uses: actions/setup-docker@v2
+
+      - name: Build Docker image
+        run: docker build . -t your-image-name:latest
+
+      - name: Push Docker image to Docker Hub (optional)
+        run: docker push your-image-name:latest
+
+      - name: Connect to VPS via SSH
+        uses: actions/ssh-keygen@v2
+        with:
+          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-key-file: ~/.ssh/id_rsa
+
+      - name: Deploy to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no root@your-vps-ip 'docker pull ${{ github.event.repository.name }}:latest'
+          ssh -o StrictHostKeyChecking=no root@your-vps-ip 'docker run -d --name ${{ github.event.repository.name }} ${{ github.event.repository.name }}:latest'
+
       # - name: Start Minikube
       #   run: minikube start
 
-
       # - name: Deploy to Minikube
       #   run: |
-      #     kubectl delete deployment your-deployment-name
-      #     kubectl apply -f deployment.yaml
-      # - name: Set up Minikube
-      #   run: |
-      #     curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-      #     chmod +x minikube
-      #     sudo mv minikube /usr/local/bin/
-
-      - name: Start Minikube
-        run: minikube start
-
-      - name: Deploy to Minikube
-        run: |
-          kubectl create deployment my-python-app --image=${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
-          kubectl expose deployment my-python-app --type=LoadBalancer --port=8080
+      #     kubectl create deployment my-python-app --image=${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
+      #     kubectl expose deployment my-python-app --type=LoadBalancer --port=8080
       
-      - name: SSH into Minikube
-        uses: appleboy/ssh-action@v0.1.2
-        with:
-          host: ${{ secrets.MINIKUBE_HOST }}
-          username: ${{ secrets.MINIKUBE_USER }}
-          key: ${{ secrets.MINIKUBE_SSH_PRIVATE_KEY }}
+      # - name: SSH into Minikube
+      #   uses: appleboy/ssh-action@v0.1.2
+      #   with:
+      #     host: ${{ secrets.MINIKUBE_HOST }}
+      #     username: ${{ secrets.MINIKUBE_USER }}
+      #     key: ${{ secrets.MINIKUBE_SSH_PRIVATE_KEY }}
 
-      - name: Pull the latest Docker image from Docker Hub into Minikube
-        run: |
-          minikube ssh -- docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
-          minikube ssh -- docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest ${{ github.event.repository.name }}:latest
+      # - name: Pull the latest Docker image from Docker Hub into Minikube
+      #   run: |
+      #     minikube ssh -- docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
+      #     minikube ssh -- docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest ${{ github.event.repository.name }}:latest
 
-      - name: Deploy to Minikube using kubectl
-        run: |
-          kubectl apply -f kube-config.yaml
-          kubectl apply -f service.yaml
+      # - name: Deploy to Minikube using kubectl
+      #   run: |
+      #     kubectl apply -f kube-config.yaml
+      #     kubectl apply -f service.yaml
 
 
       # - name: Start Minikube
