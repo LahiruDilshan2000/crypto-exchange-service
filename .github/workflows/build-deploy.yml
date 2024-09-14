@@ -100,8 +100,8 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          ssh -o StrictHostKeyChecking=no root@212.111.88.252 'docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest'
-          ssh -o StrictHostKeyChecking=no root@212.111.88.252 'docker run -d --name crypto-exchange-service ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest'
+          ssh -o StrictHostKeyChecking=no root@212.111.88.252 'docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/$crypto-exchange-service:latest'
+          ssh -o StrictHostKeyChecking=no root@212.111.88.252 'docker run -d --name crypto-exchange-service crypto-exchange-service/${{ github.event.repository.name }}:latest'
 
       # - name: Start Minikube
       #   run: minikube start
