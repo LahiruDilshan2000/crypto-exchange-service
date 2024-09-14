@@ -87,10 +87,10 @@ jobs:
         uses: actions/setup-docker@v2
 
       - name: Build Docker image
-        run: docker build . -t your-image-name:latest
+        run: docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/{{ github.event.repository.name }}:latest
 
-      - name: Push Docker image to Docker Hub (optional)
-        run: docker push your-image-name:latest
+      # - name: Push Docker image to Docker Hub (optional)
+        # run: docker push your-image-name:latest
 
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v0.1.2
