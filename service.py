@@ -7,11 +7,6 @@ def exchange_crypto():
     lala_sample = {"lala": "ABCDEFGH"}
     return jsonify(lala_sample)
 
-@app.route('/data/data', methods=['GET'])
-def exchange_crypto():
-    lala_sample = {"lala": "ABCDEFGH"}
-    return jsonify(lala_sample)
-
 
 @app.route('/test_api', methods=['GET'])
 def test_api():
