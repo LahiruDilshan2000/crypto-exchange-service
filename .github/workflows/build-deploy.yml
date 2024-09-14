@@ -105,22 +105,19 @@ jobs:
       #     kubectl create deployment my-python-app --image=${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
       #     kubectl expose deployment my-python-app --type=LoadBalancer --port=8080
 
-      - name: Download Docker image artifact
-        uses: actions/download-artifact@v3
+      - name: SSH into Minikube
+        uses: appleboy/ssh-action@v0.1.2
         with:
-          name: ${{ github.event.repository.name }}:latest
-          path: python-backend.tar
+          host: ${{ secrets.MINIKUBE_HOST }}
+          username: ${{ secrets.MINIKUBE_USER }}
+          key: ${{ secrets.MINIKUBE_SSH_PRIVATE_KEY }}
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v1
-        with:
-          version: 'v1.21.0'
-
-      - name: Load Docker image into Minikube
+      - name: Pull the latest Docker image from Docker Hub into Minikube
         run: |
-          minikube image load python-backend.tar
+          minikube ssh -- docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
+          minikube ssh -- docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest ${{ github.event.repository.name }}:latest
 
-      - name: Deploy to Minikube
+      - name: Deploy to Minikube using kubectl
         run: |
           kubectl apply -f kube-config.yaml
           kubectl apply -f service.yaml
