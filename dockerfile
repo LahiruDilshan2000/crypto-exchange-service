@@ -9,5 +9,5 @@ COPY . .
 
 EXPOSE 5000
 
-# CMD ["python", "service.py"]
-CMD python service.py
+CMD ["python", "service.py"]
+# CMD python service.py
