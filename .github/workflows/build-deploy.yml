@@ -123,10 +123,10 @@ jobs:
       #     kubectl apply -f kube-config.yaml
       #     kubectl apply -f service.yaml
       - name: Start Minikube
-          id: minikube
-          uses: hiberbee/github-action-minikube@latest
-          with:
-            profile: github
+        id: minikube
+        uses: hiberbee/github-action-minikube@latest
+        with:
+          profile: github
 
       - name: Get Minikube status
         run: minikube status
