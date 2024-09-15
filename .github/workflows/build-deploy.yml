@@ -83,15 +83,6 @@ jobs:
       - name: Deploying stuff
         run: echo "going to delpoying"
 
-      # - name: Set up Docker
-      #   uses: actions/setup-docker@v3
-
-      # - name: Build Docker image
-        # run: docker build . -t ${{ secrets.DOCKER_HUB_USERNAME }}/{{ github.event.repository.name }}:latest
-
-      # - name: Push Docker image to Docker Hub (optional)
-        # run: docker push your-image-name:latest
-
       - name: Deploy to VPS via SSH
         uses: appleboy/ssh-action@v0.1.2
         with:
@@ -102,8 +93,8 @@ jobs:
           script: |
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
             docker stop ${{ github.event.repository.name }} || true
-            docker rmi -f ${{ github.event.repository.name }} || true
-            docker run -d --name ${{ github.event.repository.name }} -p 8055:5000 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
+            docker rm -f${{ github.event.repository.name }} || true
+            docker run -d --name ${{ github.event.repository.name }} -p 8056:5001 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
 
       # - name: Connect to VPS via SSH
       #   uses: actions/ssh-keygen@v2
