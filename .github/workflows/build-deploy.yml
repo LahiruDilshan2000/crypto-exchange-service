@@ -94,7 +94,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
             docker kill ${{ github.event.repository.name }} || true
             docker rm -f ${{ github.event.repository.name }} || true
-            docker run -d --name ${{ github.event.repository.name }} -p 8056:5000 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
+            docker run -d --name ${{ github.event.repository.name }} -p 8055:5000 ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}:latest
 
       # - name: Connect to VPS via SSH
       #   uses: actions/ssh-keygen@v2
